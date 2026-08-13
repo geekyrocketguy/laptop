@@ -24,15 +24,15 @@ args=sys.argv
  
 to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
 #to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com'] #Who should the email be sent to?
-url='https://www.recreation.gov/api/permitinyo/445859/availability?start_date=2026-07-01&end_date=2026-07-31&commercial_acct=false'
+url='https://www.recreation.gov/api/permitinyo/233262/availability?start_date=2023-09-01&end_date=2023-09-30&commercial_acct=false'
 
 page = urlopen(url) #python 3 version of command
 #page = urllib.urlopen(url) #python 2 version of command
 pagecontents = str(page.read())
 
-trailhead_names = ['Cathedral Lakes']
-trailheads = ['44585907' ] #yose falls
-dates = ['2026-07-03' ]
+trailhead_names = ['North Fork of Lone Pine Creek']
+trailheads = ['495' ] #465 is kearsarge
+dates = ['2023-09-02' ]
 message = ''
 success = False
     
@@ -89,12 +89,12 @@ if (message != oldcontents) or ('test' in args): #has something changed? Then em
 
     if 'test' in args:
         message = 'THIS IS A TEST.\n\n'
-        mysubject = 'Yosemite hiking permits code is working'
+        mysubject = 'Inyo NF hiking permits code is working'
     else:
         mysubject = 'Change in Permit Availability'
 
     message = "The trailhead availability has changed. " + message + \
-           "The reservation URL is https://www.recreation.gov/permits/445859/registration/detailed-availability?date=2023-05-29&type=overnight-permit. We want to enter on 5/30 and exit on 6/1. The desired trailhead is Yosemite Falls. \n\n" + \
+           "The reservation URL is url='https://www.recreation.gov/permits/233262/registration/detailed-availability?type=overnight-permit&date=2023-09-01'. We want to enter on 9/2 and exit on 9/4. The desired trailhead is North Fork of Lone Pine Creek. \n\n" + \
            "Thought you might want to know.\n\n"\
            "Love,\n"\
            "Sean"

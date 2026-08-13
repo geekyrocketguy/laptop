@@ -22,25 +22,26 @@ import pdb
 
 args=sys.argv
  
-#to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
-to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com'] #Who should the email be sent to?
-url='https://www.recreation.gov/api/camps/availability/campground/232451/month?start_date=2022-05-01T00%3A00%3A00.000Z'
+to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
+#to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com'] #Who should the email be sent to?
+url='https://www.recreation.gov/api/camps/availability/campground/232785/month?start_date=2022-07-01T00%3A00%3A00.000Z'
 
 page = urlopen(url) #python 3 version of command
 #page = urllib.urlopen(url) #python 2 version of command
 pagecontents = str(page.read())
 
-campground_names = ['Hodgdon Meadow']
+campground_names = ['Stony Creek Campground']
 #trailheads = [ '44585939', '44585954' ] #Porcupine creek, yose falls
-dates = ['2022-05-14']
+dates = ['2022-07-02' ]
 message = ''
 success = False
     
+#for i in range(len(trailheads)):
 for i in range(len(dates)):
     locs = [i for i in range(len(pagecontents)) if pagecontents.startswith('Available', i)] #where "Available" is found
     for j in locs:
         if dates[i] in pagecontents[j-25 : j-5]:
-            print(dates[i], "found!")
+            print(dates[i] "found!")
             success = True
             message += campground_names[0] + " has available spots on " + dates[i] + ". "
         
@@ -50,19 +51,19 @@ else:
     print("No permits were available.")
 
 #check if file exists
-if not os.path.isfile('status_campgrounds.txt'): #if someone deleted the file, recreate it
-    f=open('status_campgrounds.txt', 'w')
+if not os.path.isfile('status_stonycreek.txt'): #if someone deleted the file, recreate it
+    f=open('status_stonycreek.txt', 'w')
     f.write(message)
     f.close()
-    print( 'status_campgrounds.txt was deleted by some goon, but it has been restored.')
+    print( 'status_stonycreek.txt was deleted by some goon, but it has been restored.')
 
-f=open('status_campgrounds.txt', 'r')
+f=open('status_stonycreek.txt', 'r')
 oldcontents=f.read() #has the user been emailed recently?
 f.close()
 
 if (message != oldcontents) or ('test' in args): #has something changed? Then email user.
     #print new availability into text document
-    f=open('status_campgrounds.txt', 'w')
+    f=open('status_stonycreek.txt', 'w')
     f.write(message)
     f.close()
 
@@ -77,12 +78,12 @@ if (message != oldcontents) or ('test' in args): #has something changed? Then em
 
     if 'test' in args:
         #message = 'THIS IS A TEST.\n\n'
-        mysubject = 'Yosemite campsites code is working'
+        mysubject = 'Stony Creek campground code is working'
     else:
         mysubject = 'Change in Campsite Availability'
 
     message = "The campsite availability has changed. " + message + \
-           "The reservation URL is https://www.recreation.gov/camping/campgrounds/232451. We want to check in 5/14 and check out 5/15.\n\n" + \
+           "The reservation URL is https://www.recreation.gov/camping/campgrounds/232785. We want to check in 7/2 and check out 7/3.\n\n" + \
            "Thought you might want to know.\n\n"\
            "Love,\n"\
            "Sean"

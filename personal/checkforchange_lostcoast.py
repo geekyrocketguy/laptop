@@ -22,17 +22,17 @@ import pdb
 
 args=sys.argv
  
-to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
-#to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com'] #Who should the email be sent to?
-url='https://www.recreation.gov/api/permitinyo/445859/availability?start_date=2026-07-01&end_date=2026-07-31&commercial_acct=false'
+#to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
+to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com', 'joygoebel@gmail.com'] #Who should the email be sent to?
+url='https://www.recreation.gov/api/permits/72192/availability/month?start_date=2024-05-01T00:00:00.000Z&commercial_acct=false&is_lottery=false'
 
 page = urlopen(url) #python 3 version of command
 #page = urllib.urlopen(url) #python 2 version of command
 pagecontents = str(page.read())
 
-trailhead_names = ['Cathedral Lakes']
-trailheads = ['44585907' ] #yose falls
-dates = ['2026-07-03' ]
+trailhead_names = ['The Lost Coast']
+trailheads = ['495' ] #465 is kearsarge
+dates = ['2024-05-12' ]
 message = ''
 success = False
     
@@ -45,8 +45,8 @@ for i in range(len(dates)):
         enddate = dates[i][:-2] + endday #add month and year
         crop = pagecontents[pagecontents.find(dates[i]) : pagecontents.find(enddate)]
 
-        crop = crop[crop.find(trailheads[j]) :]
-        crop = crop[crop.find("remaining")+11 : crop.find("is_walkup")].replace(',"', "")
+        #crop = crop[crop.find(trailheads[j]) :]
+        crop = crop[crop.find("remaining")+11 : crop.find("show_walkup")].replace(',"', "")
         
         print(crop)
         if len(crop)==0: #failed to download or trailhead disappeared
@@ -89,12 +89,12 @@ if (message != oldcontents) or ('test' in args): #has something changed? Then em
 
     if 'test' in args:
         message = 'THIS IS A TEST.\n\n'
-        mysubject = 'Yosemite hiking permits code is working'
+        mysubject = 'Lost Coast hiking permits code is working'
     else:
         mysubject = 'Change in Permit Availability'
 
     message = "The trailhead availability has changed. " + message + \
-           "The reservation URL is https://www.recreation.gov/permits/445859/registration/detailed-availability?date=2023-05-29&type=overnight-permit. We want to enter on 5/30 and exit on 6/1. The desired trailhead is Yosemite Falls. \n\n" + \
+           "The reservation URL is https://www.recreation.gov/permits/72192/registration/detailed-availability?date=2024-05-12. We want to enter on 5/12 and exit on 5/14. Black Sands is the southern trailhead and Mattole is the northern trailhead. \n\n" + \
            "Thought you might want to know.\n\n"\
            "Love,\n"\
            "Sean"

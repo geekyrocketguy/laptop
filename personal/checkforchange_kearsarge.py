@@ -1,11 +1,11 @@
 #Checks site to see if it has changed.
-#syntax: python3 checkforchange.py test
+#syntax: python checkforchange.py test
 #test is optional
 
 #written for recreation.gov trailheads
 
 #Google will occasionally get grumpy and block the login attempt (maybe
-# if the IP address changes?). Either open a browser on the computer and log
+# if the IP address changes?). Either open a browser on SCExAO2 and log
 # in to scexaonotifier@gmail.com, or click the "Yes that was me" on the
 # "Someone has your password!" security emails that gmail sends out.
 # Then everything will be happy again.
@@ -24,25 +24,38 @@ args=sys.argv
  
 #to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
 to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com'] #Who should the email be sent to?
-url='https://www.recreation.gov/api/camps/availability/campground/232451/month?start_date=2022-05-01T00%3A00%3A00.000Z'
+url='https://www.recreation.gov/api/permitinyo/233262/availability?start_date=2021-07-01&end_date=2021-07-31&commercial_acct=false'
 
 page = urlopen(url) #python 3 version of command
 #page = urllib.urlopen(url) #python 2 version of command
 pagecontents = str(page.read())
 
-campground_names = ['Hodgdon Meadow']
-#trailheads = [ '44585939', '44585954' ] #Porcupine creek, yose falls
-dates = ['2022-05-14']
+trailhead_names = ['kearsarge pass']
+trailheads = [ '465' ] #copper creek
+dates = ['2021-07-10', '2021-07-11', '2021-07-12', ]
 message = ''
 success = False
     
+#for i in range(len(trailheads)):
 for i in range(len(dates)):
-    locs = [i for i in range(len(pagecontents)) if pagecontents.startswith('Available', i)] #where "Available" is found
-    for j in locs:
-        if dates[i] in pagecontents[j-25 : j-5]:
-            print(dates[i], "found!")
+    for j in range(len(trailheads)):
+    
+        endday = str(int(dates[i][-2:])+1)
+        if len(endday)==1: endday = '0'+endday #make sure the day is double digit
+        enddate = dates[i][:-2] + endday #add month and year
+        crop = pagecontents[pagecontents.find(dates[i]) : pagecontents.find(enddate)]
+
+        crop = crop[crop.find(trailheads[j]) :]
+        crop = crop[crop.find("remaining")+11 : crop.find("is_walkup")].replace(',"', "")
+        
+
+        if len(crop)==0: #failed to download or trailhead disappeared
+            print("Error finding date! Quitting.")
+            quit
+
+        if crop != '0':
             success = True
-            message += campground_names[0] + " has available spots on " + dates[i] + ". "
+            message += trailhead_names[j] + " has available permits on " + dates[i] + ". "
         
 if success:
     print('An available date was found.')
@@ -50,19 +63,19 @@ else:
     print("No permits were available.")
 
 #check if file exists
-if not os.path.isfile('status_campgrounds.txt'): #if someone deleted the file, recreate it
-    f=open('status_campgrounds.txt', 'w')
+if not os.path.isfile('status_kearsarge.txt'): #if someone deleted the file, recreate it
+    f=open('status_kearsarge.txt', 'w')
     f.write(message)
     f.close()
-    print( 'status_campgrounds.txt was deleted by some goon, but it has been restored.')
+    print( 'status_kearsarge.txt was deleted by some goon, but it has been restored.')
 
-f=open('status_campgrounds.txt', 'r')
+f=open('status_kearsarge.txt', 'r')
 oldcontents=f.read() #has the user been emailed recently?
 f.close()
 
 if (message != oldcontents) or ('test' in args): #has something changed? Then email user.
     #print new availability into text document
-    f=open('status_campgrounds.txt', 'w')
+    f=open('status_kearsarge.txt', 'w')
     f.write(message)
     f.close()
 
@@ -76,19 +89,19 @@ if (message != oldcontents) or ('test' in args): #has something changed? Then em
     server.login('scexaonotifier@gmail.com', pw)
 
     if 'test' in args:
-        #message = 'THIS IS A TEST.\n\n'
-        mysubject = 'Yosemite campsites code is working'
+        message = 'THIS IS A TEST.\n\n'
+        mysubject = 'Kearsarge Pass code is Working'
     else:
-        mysubject = 'Change in Campsite Availability'
+        mysubject = 'Change in Permit Availability'
 
-    message = "The campsite availability has changed. " + message + \
-           "The reservation URL is https://www.recreation.gov/camping/campgrounds/232451. We want to check in 5/14 and check out 5/15.\n\n" + \
+    message = "The Kearsarge Pass trailhead availability has changed. " + message + \
+           "The reservation URL is https://www.recreation.gov/permits/445857/registration/detailed-availability?date=2021-07-10&type=overnight-permit and the possible entry dates are 7/10-7/12, though 7/11 is optimal. Exit date is 7/17. \n\n" + \
            "Thought you might want to know.\n\n"\
            "Love,\n"\
            "Sean"
     
     server.sendmail("scexaonotifier@gmail.com", to_address, 
-                    'Subject: '+mysubject+'\n\n'+message)
+                    'Subject: '+mysubject+'\n'+message)
     server.quit()
 
 

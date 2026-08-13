@@ -1,3 +1,5 @@
+
+
 #Checks site to see if it has changed.
 #syntax: python checkforchange.py test
 #test is optional
@@ -22,17 +24,17 @@ import pdb
 
 args=sys.argv
  
-to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
-#to_address = ['geekyrocketguy@gmail.com', 'savillephotographer@gmail.com'] #Who should the email be sent to?
-url='https://www.recreation.gov/api/permitinyo/445859/availability?start_date=2026-07-01&end_date=2026-07-31&commercial_acct=false'
+#to_address = 'geekyrocketguy@gmail.com' #Who should the email be sent to?
+to_address = ['geekyrocketguy@gmail.com', 'w.victoryee@gmail.com'] #Who should the email be sent to?
+url='https://www.recreation.gov/api/permitinyo/445857/availability?start_date=2021-08-01&end_date=2021-08-31&commercial_acct=false'
 
 page = urlopen(url) #python 3 version of command
 #page = urllib.urlopen(url) #python 2 version of command
 pagecontents = str(page.read())
 
-trailhead_names = ['Cathedral Lakes']
-trailheads = ['44585907' ] #yose falls
-dates = ['2026-07-03' ]
+trailhead_names = ['copper creek']
+trailheads = [ '44585702' ] #copper creek
+dates = ['2021-08-08', '2021-08-09']
 message = ''
 success = False
     
@@ -48,12 +50,12 @@ for i in range(len(dates)):
         crop = crop[crop.find(trailheads[j]) :]
         crop = crop[crop.find("remaining")+11 : crop.find("is_walkup")].replace(',"', "")
         
-        print(crop)
+        print('retrieved text:' + crop)
         if len(crop)==0: #failed to download or trailhead disappeared
-            print("Error finding date or trailhead! Continuing.")
-            continue
+            print("Error finding date! Quitting.")
+            quit
 
-        elif crop != '0':
+        if crop != '0':
             success = True
             message += trailhead_names[j] + " has available permits on " + dates[i] + ". "
         
@@ -63,22 +65,23 @@ else:
     print("No permits were available.")
 
 #check if file exists
-if not os.path.isfile('status_trails.txt'): #if someone deleted the file, recreate it
-    f=open('status_trails.txt', 'w')
+if not os.path.isfile('status.txt'): #if someone deleted the file, recreate it
+    f=open('status.txt', 'w')
     f.write(message)
     f.close()
-    print( 'status_trails.txt was deleted by some goon, but it has been restored.')
+    print( 'status.txt was deleted by some goon, but it has been restored.')
 
-f=open('status_trails.txt', 'r')
+f=open('status.txt', 'r')
 oldcontents=f.read() #has the user been emailed recently?
 f.close()
 
 if (message != oldcontents) or ('test' in args): #has something changed? Then email user.
     #print new availability into text document
-    f=open('status_trails.txt', 'w')
+    f=open('status.txt', 'w')
     f.write(message)
     f.close()
 
+    #send email saying the detector is cooled again and ready to use
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
     #pw = np.loadtxt('notthepassword.txt', dtype='str')
@@ -89,14 +92,14 @@ if (message != oldcontents) or ('test' in args): #has something changed? Then em
 
     if 'test' in args:
         message = 'THIS IS A TEST.\n\n'
-        mysubject = 'Yosemite hiking permits code is working'
+        mysubject = 'Code is Working'
     else:
         mysubject = 'Change in Permit Availability'
 
-    message = "The trailhead availability has changed. " + message + \
-           "The reservation URL is https://www.recreation.gov/permits/445859/registration/detailed-availability?date=2023-05-29&type=overnight-permit. We want to enter on 5/30 and exit on 6/1. The desired trailhead is Yosemite Falls. \n\n" + \
-           "Thought you might want to know.\n\n"\
-           "Love,\n"\
+    message = "The Copper Creek SHR trailhead availability has changed. " + message + \
+           "The reservation URL is https://www.recreation.gov/permits/445857/registration/detailed-availability?date=2021-08-08&type=overnight-permit and the optimal entry date is Aug 9, though Aug 8 could work too.\n\n" + \
+           "Thought you might want to know.\n\n" + \
+           "Love,\n" + \
            "Sean"
     
     server.sendmail("scexaonotifier@gmail.com", to_address, 

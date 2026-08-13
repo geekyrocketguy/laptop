@@ -39,22 +39,30 @@ etc
 
 #THE USER SHOULD SET observer, target, mist_radius, and timezone_offset
 
-observer = np.array([37.73036 , -119.57362, 7208./3.281]) #lat lon alt of glacier point
+#observer = np.array([37.713248, -119.706143, 5272/3.281]) #lat lon alt of "inspiration point" (tunnel view) webcam.
+#observer = np.array([37.715589, -119.676930, 4360/3.281]) #lat lon alt of tunnel view
+#observer = np.array([37.721455, -119.594339, 7350/3.281]) #lat lon alt of Roosevelt Point
+#observer = np.array([37.712366, -119.604609, 7450/3.281]) #lat lon alt of Taft Point
+observer = np.array([37.73036 , -119.57362, 7208./3.281]) #lat lon alt of Glacier point
+#observer = np.array([37.72311 , -119.58435, 8130./3.281]) #lat lon alt of Sentinel Dome
 #observer = np.array([37.7441 , -119.5913, 3965./3.281]) #lat lon alt of meadow lookout with view of Lower YF
 #observer = np.array([37.754496 , -119.60288, 7238./3.281]) #lat lon alt of Eagle Peak lookout rock, averaged from many actual GPS points
+#observer = np.array([37.75618 , -119.60341, 7238./3.281]) #lat lon alt of just N of Eagle Peak lookout rock
 #observer = np.array([37.74993 , -119.59575, 3965./3.281]) #lat lon alt of Lower YF Bridge
 
+#target = np.array([37.731067, -119.627117, 5600/3.281]) #lat lon alt of horsetail falls
 #target = np.array([37.75139, -119.59742, 4212/3.281]) #lat lon alt of lower yosemite falls
 #target = np.array([37.75473, -119.5982, 5080/3.281]) #lat lon alt of upper yosemite falls
 target = np.array([37.75554, -119.59804, 5132/3.281]) #lat lon alt of upper yosemite falls
-#target = np.array([37.75530, -119.59729, 5033/3.281]) #lat lon alt of stream just below upper yosemite falls
 
-#mist_radius = 2. #half of diameter of mist cloud, degrees. 2 = Glacier Point value.
+#mist_radius = 1. #horsetail from Sentinel
+mist_radius = 2. #half of diameter of mist cloud, degrees. 2 = Glacier Point value.
 #mist_radius = 6. #half of diameter of mist cloud, degrees. for viewing from meadow
-mist_radius = 10. #half of diameter of mist cloud, degrees. for viewing from Eagle Peak Lookout
+#mist_radius = 10. #half of diameter of mist cloud, degrees. for viewing from Eagle Peak Lookout
 #mist_radius = 15. #half of diameter of mist cloud, degrees. for viewing from Lower Yosemite Falls Bridge
 
 timezone_offset = -7 #hours, daylight saving during summer, UTC+time_offset = PST 
+#timezone_offset = -8 #hours, PST winter, UTC+time_offset = PST 
 
 
 #year, month, day should be numbers, e.g. 2018, 4, 15
